@@ -3,7 +3,7 @@ namespace :assets do
   task :compile do
     on roles(:app) do
       within release_path do
-        execute :rake, :assets, :compile
+        execute :rake, 'assets:compile'
       end
     end
   end
