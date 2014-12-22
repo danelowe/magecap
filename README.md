@@ -1,6 +1,6 @@
 # Magecap
 
-TODO: Write a gem description
+Much inspiration from Magentify. For updates refer to that project.
 
 ## Installation
 
