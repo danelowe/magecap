@@ -19,56 +19,6 @@ load Gem.find_files('nonrails.rb').last.to_s
 
 namespace :mage do
   desc <<-DESC
-Prepares one or more servers for deployment of Magento. Before you can use any \
-of the Capistrano deployment tasks with your project, you will need to \
-make sure all of your servers have been prepared with `cap deploy:setup'. When \
-you add a new server to your cluster, you can easily run the setup task \
-on just that server by specifying the HOSTS environment variable:
-
-$ cap HOSTS=new.server.com mage:setup
-
-It is safe to run this task on servers that have already been set up; it \
-will not destroy any deployed revisions or data.
-  DESC
-  task :setup do
-    on roles(:web, :app) do
-      if app_shared_dirs
-        app_shared_dirs.each { |link| run "#{try_sudo} mkdir -p #{shared_path}#{link} && #{try_sudo} chmod g+w #{shared_path}#{link}"}
-      end
-      if app_shared_files
-        app_shared_files.each { |link| run "#{try_sudo} touch #{shared_path}#{link} && #{try_sudo} chmod g+w #{shared_path}#{link}" }
-      end
-    end
-  end
-
-  desc <<-DESC
-Touches up the released code. This is called by update_code \
-after the basic deploy finishes.
-
-Any directories deployed from the SCM are first removed and then replaced with \
-symlinks to the same directories within the shared location.
-  DESC
-  task :finalize_update do
-    on roles(:web, :app) do
-      run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
-
-      if app_symlinks
-        # Remove the contents of the shared directories if they were deployed from SCM
-        app_symlinks.each { |link| run "#{try_sudo} rm -rf #{latest_release}#{link}" }
-        # Add symlinks the directoris in the shared location
-        app_symlinks.each { |link| run "ln -nfs #{shared_path}#{link} #{latest_release}#{link}" }
-      end
-
-      if app_shared_files
-        # Remove the contents of the shared directories if they were deployed from SCM
-        app_shared_files.each { |link| run "#{try_sudo} rm -rf #{latest_release}/#{link}" }
-        # Add symlinks the directoris in the shared location
-        app_shared_files.each { |link| run "ln -s #{shared_path}#{link} #{latest_release}#{link}" }
-      end
-    end
-  end
-
-  desc <<-DESC
 Clear the Magento Cache
   DESC
   task :clean_cache do
@@ -143,6 +93,4 @@ Clean the Magento logs
   end
 end
 
-# after 'deploy:setup', 'mage:setup'
-after 'deploy:finalize_update', 'mage:finalize_update'
 after 'deploy:cleanup', 'mage:clean_cache'
