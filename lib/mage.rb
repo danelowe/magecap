@@ -71,7 +71,7 @@ symlinks to the same directories within the shared location.
   desc <<-DESC
 Clear the Magento Cache
   DESC
-  task :cc do
+  task :clean_cache do
     on roles(:web, :app) do
       run "cd #{current_path}#{app_webroot} && php -r \"require_once('app/Mage.php'); Mage::app()->cleanCache();\""
     end
@@ -145,4 +145,4 @@ end
 
 # after 'deploy:setup', 'mage:setup'
 after 'deploy:finalize_update', 'mage:finalize_update'
-# after 'deploy:create_symlink', 'mage:compiler'
+after 'deploy:cleanup', 'mage:clean_cache'
