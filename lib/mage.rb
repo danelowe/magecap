@@ -5,8 +5,8 @@ namespace :mage do
 Clear the Magento Cache
   DESC
   task :clean_cache do
-    on roles(:web, :app) do
-      run "cd #{current_path}#{fetch(:app_webroot)} && php -r \"require_once('app/Mage.php'); Mage::app()->cleanCache();\""
+    on roles(:app) do
+      execute "cd #{current_path}#{fetch(:app_webroot)} && php -r \"require_once('app/Mage.php'); Mage::app()->cleanCache();\""
     end
   end
 
@@ -15,7 +15,7 @@ Disable the Magento install by creating the maintenance.flag in the web root.
   DESC
   task :disable do
     on roles(:web) do
-      run "cd #{current_path}#{app_webroot} && touch maintenance.flag"
+      execute "cd #{current_path}#{fetch(:app_webroot)} && touch maintenance.flag"
     end
   end
 
@@ -24,7 +24,7 @@ Enable the Magento stores by removing the maintenance.flag in the web root.
   DESC
   task :enable do
     on roles(:web) do
-      run "cd #{current_path}#{app_webroot} && rm -f maintenance.flag"
+      execute "cd #{current_path}#{fetch(:app_webroot)} && rm -f maintenance.flag"
     end
 end
 
@@ -32,9 +32,9 @@ end
 Run the Magento compiler
   DESC
   task :compiler do
-    on roles(:web, :app) do
+    on roles(:app) do
       if fetch(:compile, true)
-        run "cd #{current_path}#{app_webroot}/shell && php -f compiler.php -- compile"
+        execute "cd #{current_path}#{fetch(:app_webroot)}/shell && php -f compiler.php -- compile"
       end
     end
   end
@@ -43,8 +43,8 @@ Run the Magento compiler
 Enable the Magento compiler
   DESC
   task :enable_compiler do
-    on roles(:web, :app) do
-      run "cd #{current_path}#{app_webroot}/shell && php -f compiler.php -- enable"
+    on roles(:app) do
+      execute "cd #{current_path}#{fetch(:app_webroot)}/shell && php -f compiler.php -- enable"
     end
   end
 
@@ -52,8 +52,8 @@ Enable the Magento compiler
 Disable the Magento compiler
   DESC
   task :disable_compiler do
-    on roles(:web, :app) do
-      run "cd #{current_path}#{app_webroot}/shell && php -f compiler.php -- disable"
+    on roles(:app) do
+      execute "cd #{current_path}#{fetch(:app_webroot)}/shell && php -f compiler.php -- disable"
     end
   end
 
@@ -61,8 +61,8 @@ Disable the Magento compiler
 Run the Magento indexer
   DESC
   task :indexer do
-    on roles(:web, :app) do
-      run "cd #{current_path}#{app_webroot}/shell && php -f indexer.php -- reindexall"
+    on roles(:app) do
+      execute "cd #{current_path}#{fetch(:app_webroot)}/shell && php -f indexer.php -- reindexall"
     end
   end
 
@@ -70,8 +70,8 @@ Run the Magento indexer
 Clean the Magento logs
   DESC
   task :clean_log do
-    on roles(:web, :app) do
-      run "cd #{current_path}#{app_webroot}/shell && php -f log.php -- clean"
+    on roles(:app) do
+      execute "cd #{current_path}#{fetch(:app_webroot)}/shell && php -f log.php -- clean"
     end
   end
 end
