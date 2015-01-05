@@ -1,4 +1,3 @@
-require 'pry'
 require 'action_mailer'
 class Magecap::Notifier
   # @todo: split this into a base notifier class an mail notifier class based on the old-school capistrano-notifier
