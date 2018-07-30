@@ -3,7 +3,7 @@ namespace :deploy do
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute :sudo, :service, "php7.0-fpm restart"
+      execute :sudo, :service, "php7.2-fpm restart"
     end
   end
 
